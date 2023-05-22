@@ -3,10 +3,11 @@ from pydantic import BaseSettings
 
 
 class Settings(BaseSettings):
-    log_level: str = "info" #case insensitive
+    log_level: str = "info"  # case insensitive
 
     class Config:
         env_file = ".env"
+
 
 @lru_cache()
 def get_settings():
