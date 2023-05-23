@@ -7,8 +7,7 @@ router = APIRouter()
 
 
 @router.post("/login")
-async def login(dto: Login):
-    service = AuthService()
+async def login(dto: Login, service: AuthService = Depends(AuthService)):
     return service.login(dto)
 
 
