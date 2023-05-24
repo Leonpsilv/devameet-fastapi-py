@@ -16,3 +16,38 @@ class MeetService:
         self.db.commit()
         self.db.refresh(meet)
         return meet
+
+    def get_all(self):
+        return self.db.query(Meet).all()
+
+    def get_meet_by_id(self, id):
+        meet = self.db.query(Meet).filter(Meet.id == id).first()
+        if not meet:
+            raise ApiError(
+                message="Cannot find this meet", error="Bad Request", status_code=404
+            )
+        return meet
+
+    def update_meet(self, id: str, dto: UpdateMeet):
+        meet = self.db.query(Meet).filter(Meet.id == id).first()
+        if not meet:
+            raise ApiError(
+                message="Cannot update this meet", error="Bad Request", status_code=404
+            )
+        meet.name = dto.name
+        meet.color = dto.color
+
+        self.db.commit()
+        self.db.refresh(meet)
+        return meet
+
+    def delete_meet(self, id: str):
+        meet = self.db.query(Meet).filter(Meet.id == id).first()
+        if not meet:
+            raise ApiError(
+                message="Cannot delete this meet", error="Bad Request", status_code=404
+            )
+        self.db.delete(meet)
+        self.db.commit()
+
+        return meet

@@ -20,7 +20,7 @@ class Meet(Base):
 class MeetLinkGenerator:
     @staticmethod
     def generate_section(length):
-        characters = string.ascii_lowercase + string.digits
+        characters = string.ascii_lowercase + string.digits #abcdefghijklmnopqrstuvwxyz0123456789
         return "".join(random.choice(characters) for _ in range(length))
     
     @staticmethod
