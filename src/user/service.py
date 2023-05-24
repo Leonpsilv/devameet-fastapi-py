@@ -12,10 +12,10 @@ class UserService:
     # def get_user_by_id(self, userId: str):
     #     return self.db.query(User).filter(User.id == userId).first()
 
-    async def get_user_by_username(self, username: str):
+    def get_user_by_username(self, username: str):
         return self.db.query(User).filter(User.username == username).first()
 
-    async def update_user(self, userId: str, username: str, dto: UpdateUser):
+    def update_user(self, userId: str, username: str, dto: UpdateUser):
         user = (
             self.db.query(User)
             .filter(User.id == userId, User.username == username)
