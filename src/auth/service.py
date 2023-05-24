@@ -1,3 +1,4 @@
+from src.core.middlewares.error import ApiError
 from src.auth.handler import TokenHandler
 from .model import User
 from sqlalchemy.orm import Session
@@ -15,9 +16,9 @@ class AuthService:
     def login(self, login_dto: Login):
         user = self.db.query(User).filter(User.username == login_dto.login).first()
         if not user:
-            raise Exception("Incorrect username or password")
+            raise ApiError(message="Incorrect username or password", error="AuthenticationError",status_code=401)
         if not self.pwd_context.verify(login_dto.password, user.hashed_password):
-            raise Exception("Incorrect username or password")
+            raise ApiError(message="Incorrect username or password", error="AuthenticationError",status_code=401)
         token = TokenHandler.create_access_token(user.username)
         return Token(token=token, name=user.name, email=user.username)
 

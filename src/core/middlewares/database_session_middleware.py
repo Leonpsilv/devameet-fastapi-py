@@ -4,9 +4,6 @@ from ..database import SessionLocal
 
 
 class DatabaseSessionMiddleware(BaseHTTPMiddleware):
-    def __init__(self, app):
-        super().__init__(app)
-
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint):
         response = Response("Internal server error", status_code=500)
         try:
