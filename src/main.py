@@ -10,7 +10,7 @@ def build_api() -> FastAPI:
     application.add_middleware(DatabaseSessionMiddleware)
 
     application.add_exception_handler(RequestValidationError, handle_validation_error)
-    application.add_exception_handler(HTTPException, handle_validation_error)
+    application.add_exception_handler(HTTPException, handle_http_exception)
 
     application.add_middleware(ErrorConverterMiddleware)
     application.add_middleware(ErrorHandlerMiddleware)
