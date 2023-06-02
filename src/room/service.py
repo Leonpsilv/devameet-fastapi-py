@@ -11,8 +11,8 @@ class RoomService:
     def __init__(self, db: SessionLocal = Depends(get_db)):
         self.db = db
 
-    def __get_meet(self, link: str):
-        meet = self.db.query(Meet).filter(Meet.link == link)
+    def _get_meet(self, link: str):
+        meet = self.db.query(Meet).filter(Meet.link == link).one()
         if not meet:
             raise ApiError(
                 message="Cannot find this meet", error="Bad Request", status_code=404
@@ -20,7 +20,7 @@ class RoomService:
         return meet
 
     def get_room(self, link: str):
-        meet = self.__get_meet(link)
+        meet = self._get_meet(link)
         return {
             "link": meet.link,
             "name": meet.name,
@@ -28,11 +28,11 @@ class RoomService:
             "objects": meet.object_meets,
         }
 
-    def list_users_positions(self, link: str):
-        meet = self.__get_meet(link)
+    def list_users_position(self, link: str):
+        meet = self._get_meet(link)
         return self.db.query(Position).filter(meet.id == Position.meet_id).all()
 
-    def delete_user_position(self, client_id: str):
+    def delete_users_position(self, client_id: str):
         self.db.query(Position).filter(Position.client_id == client_id).delete()
         self.db.commit()
 
@@ -81,3 +81,5 @@ class RoomService:
             .filter(Position.user_id == user.id)\
             .update({"muted": dto.muted})
         self.db.commit()
+
+    

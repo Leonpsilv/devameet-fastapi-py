@@ -30,6 +30,7 @@ class WebSocketServer:
         self.socket_manager.on('disconnect', self.on_disconnect)
         self.socket_manager.on('join', self.on_join)
         self.socket_manager.on('move', self.on_move)
+        self.socket_manager.on('move-challenge', self.on_move_challenge)
         self.socket_manager.on('toggle-mute-user', self.on_toggle_mute_user)
         self.socket_manager.on('call-user', self.on_call_user)
         self.socket_manager.on('make-answer', self.on_make_answer)
@@ -69,7 +70,7 @@ class WebSocketServer:
             logger.debug("JOIN:Inserting user in room")
             self.active_sockets.append(WebSocketObject(sid, link, user_id))
 
-            dto = UpdatePosition(x=2, y=2, orientation='bottom')
+            dto = UpdatePosition(x=2, y=2, orientation='front')
 
             with SessionLocal() as db_connection:
                 service = RoomService(db_connection)
@@ -84,7 +85,6 @@ class WebSocketServer:
 
     async def on_move(self, sid, *args, **kwargs):
         link, user_id, x, y, orientation =  args[0]['link'],  args[0]['userId'], args[0]['x'], args[0]['y'], args[0]['orientation']
-
         dto = UpdatePosition(x=x, y=y, orientation=orientation)
 
         with SessionLocal() as db_connection:
@@ -93,6 +93,21 @@ class WebSocketServer:
             users = service.list_users_position(link)
 
         await self.socket_manager.emit(f'{link}-update-user-list', {'users': [user.to_json() for user in users]})
+
+        logger.info("Moved")
+
+    async def on_move_challenge(self, sid, *args, **kwargs):
+        print(args)
+        # link, user_id, x, y, orientation =  args[0]['link'],  args[0]['userId'], args[0]['x'], args[0]['y'], args[0]['orientation']
+
+        # dto = UpdatePosition(x=x, y=y, orientation=orientation)
+
+        # with SessionLocal() as db_connection:
+        #     service = RoomService(db_connection)
+        #     service.update_user_position(user_id=user_id, link=link, client_id=sid, dto=dto)
+        #     users = service.list_users_position(link)
+
+        # await self.socket_manager.emit(f'{link}-update-user-list', {'users': [user.to_json() for user in users]})
 
         logger.info("Moved")
 
