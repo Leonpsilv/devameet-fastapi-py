@@ -79,7 +79,6 @@ class RoomService:
     def update_user_mute(self, dto: ToggleMute, sid: str):
         meet = self._get_meet(dto.link)
         loggedUserPosition = self.get_logged_user_position(sid)
-        print(loggedUserPosition.user_id)
         
         def toggl_mute (user_id):
             user = self.db.query(User).filter(User.id == user_id).first()
