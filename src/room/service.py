@@ -32,6 +32,9 @@ class RoomService:
         meet = self._get_meet(link)
         return self.db.query(Position).filter(meet.id == Position.meet_id).all()
 
+    def get_logged_user(self, sid: str):
+        return self.db.query(Position).filter(sid == Position.client_id).one()
+
     def delete_users_position(self, client_id: str):
         self.db.query(Position).filter(Position.client_id == client_id).delete()
         self.db.commit()

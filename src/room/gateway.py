@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi_socketio import SocketManager
+from src.meet.service import MeetService
 from src.core.logger import ApiLogger
 
 from src.core.database import SessionLocal
@@ -98,16 +99,42 @@ class WebSocketServer:
 
     async def on_move_challenge(self, sid, *args, **kwargs):
         keyCommand = args[0] # up, down, left or right
-        
-        
-        # dto = UpdatePosition(x=x, y=y, orientation=orientation)
 
-        # with SessionLocal() as db_connection:
-        #     service = RoomService(db_connection)
-        #     service.update_user_position(user_id=user_id, link=link, client_id=sid, dto=dto)
-        #     users = service.list_users_position(link)
+        #print(user.orientation) # top|right|bottom|left
+        with SessionLocal() as db_connection:
+            service = RoomService(db_connection)
+            meet_service = MeetService(db_connection)
+            user_position = service.get_logged_user(sid)
+            match keyCommand:
+                case 'up':
+                    if user_position.orientation == 'top':
+                        user_position.y += 1 if user_position.y < 8 else 0
+                    else:
+                        user_position.orientation = 'top'
+                case 'right':
+                    if user_position.orientation == 'right':
+                        user_position.x += 1 if user_position.x < 8 else 0
+                    else:
+                        user_position.orientation = 'right'
+                case 'down':
+                    if user_position.orientation == 'bottom':
+                        user_position.y -= 1 if user_position.y > 1 else 0
+                    else:
+                        user_position.orientation = 'bottom'
+                case 'left':
+                    if user_position.orientation == 'left':
+                        user_position.x -= 1 if user_position.x > 1 else 0
+                    else:
+                        user_position.orientation = 'left'
+                case _:
+                    pass
+            
+            meet = meet_service.get_meet_by_id(user_position.meet_id)
+            dto = UpdatePosition(x=user_position.x, y=user_position.y, orientation=user_position.orientation)
+            service.update_user_position(user_id=user_position.user_id, link=meet.link, client_id=sid, dto=dto)
+            users = service.list_users_position(meet.link)
 
-        # await self.socket_manager.emit(f'{link}-update-user-list', {'users': [user.to_json() for user in users]})
+        await self.socket_manager.emit(f'{meet.link}-update-user-list', {'users': [user.to_json() for user in users]})
 
         logger.info("Moved")
 
