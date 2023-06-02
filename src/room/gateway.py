@@ -70,7 +70,7 @@ class WebSocketServer:
             logger.debug("JOIN:Inserting user in room")
             self.active_sockets.append(WebSocketObject(sid, link, user_id))
 
-            dto = UpdatePosition(x=2, y=2, orientation='front')
+            dto = UpdatePosition(x=2, y=2, orientation='bottom')
 
             with SessionLocal() as db_connection:
                 service = RoomService(db_connection)
