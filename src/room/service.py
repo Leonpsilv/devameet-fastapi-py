@@ -32,7 +32,7 @@ class RoomService:
         meet = self._get_meet(link)
         return self.db.query(Position).filter(meet.id == Position.meet_id).all()
 
-    def get_logged_user(self, sid: str):
+    def get_logged_user_position(self, sid: str):
         return self.db.query(Position).filter(sid == Position.client_id).one()
 
     def delete_users_position(self, client_id: str):
@@ -76,13 +76,22 @@ class RoomService:
             self.db.add(position)
         self.db.commit()
 
-    def update_user_mute(self, dto: ToggleMute):
+    def update_user_mute(self, dto: ToggleMute, sid: str):
         meet = self._get_meet(dto.link)
-        user = self.db.query(User).filter(User.id == dto.user_id).first()
-        self.db.query(Position)\
-            .filter(Position.meet_id == meet.id)\
-            .filter(Position.user_id == user.id)\
-            .update({"muted": dto.muted})
-        self.db.commit()
+        loggedUserPosition = self.get_logged_user_position(sid)
+        print(loggedUserPosition.user_id)
+        
+        def toggl_mute (user_id):
+            user = self.db.query(User).filter(User.id == user_id).first()
+            self.db.query(Position)\
+                .filter(Position.meet_id == meet.id)\
+                .filter(Position.user_id == user.id)\
+                .update({"muted": dto.muted})
+            self.db.commit()
+
+        if loggedUserPosition.user_id == meet.user_id:
+            toggl_mute(dto.user_id)
+        else:
+            toggl_mute(loggedUserPosition.user_id)
 
     
