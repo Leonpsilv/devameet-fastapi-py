@@ -97,9 +97,9 @@ class WebSocketServer:
         logger.info("Moved")
 
     async def on_move_challenge(self, sid, *args, **kwargs):
-        print(args)
-        # link, user_id, x, y, orientation =  args[0]['link'],  args[0]['userId'], args[0]['x'], args[0]['y'], args[0]['orientation']
-
+        keyCommand = args[0] # up, down, left or right
+        
+        
         # dto = UpdatePosition(x=x, y=y, orientation=orientation)
 
         # with SessionLocal() as db_connection:
