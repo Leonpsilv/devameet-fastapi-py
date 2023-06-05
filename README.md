@@ -11,8 +11,9 @@ O projeto é um inspirado no [Google Meet](https://meet.google.com
 * python-jose 3.3.0
 * SQLAlchemy 2.0.15
 * pydantic 0.22.0
-* PostgreSQL
-* Docker 
+* postgreSQL
+* docker-compose
+* docker 
 
 ### Configuração do ambiente de desenvolvimento
 
@@ -21,6 +22,7 @@ O projeto é um inspirado no [Google Meet](https://meet.google.com
 1. configurar as variáveis de ambiente no arquivo `.env`
 1. configurar o ambiente virtual para instalar as dependências do projeto
 1. instalar as dependencias do projeto `pip install`, presentes no arquivo _requirements.txt_
+1. criar um container com o docker executando o comando `docker compose up -d`
 1. executar o comando `uvicorn src.main:app --reload` para subir a aplicação em ambiente de desenvolvimento
 
 ### Autor
