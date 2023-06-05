@@ -123,7 +123,7 @@ class WebSocketServer:
             service = RoomService(db_connection)
             meet_service = MeetService(db_connection)
 
-            user_position = service.get_logged_user(sid)
+            user_position = service.get_logged_user_position(sid)
 
             match keyCommand:
                 case "up":
